@@ -25,11 +25,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
 
     #region Private Fields
     Rigidbody rigid;
-    FloatingJoystick joy;
-    FixedButton jumpButton;
-    //Animator anim;
+    Animator anim;
     Vector3 moveVec;
-    bool isJumping;
     #endregion
 
     #region Public Fields
@@ -38,6 +35,12 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     [Tooltip("플레이어의 현재 체력")]
     public float Health = 1f;
     public static GameObject LocalPlayerInstance;
+    public GameObject Bomb;
+    public bool isJumping;
+
+    public FloatingJoystick joy;
+    public FixedButton jumpButton;
+    public BombButton bombButton;
     #endregion
 
 
@@ -45,7 +48,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        //anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
         
         if (photonView.IsMine)
         {
@@ -55,6 +58,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             joy = _gameObject.Find("Floating Joystick").GetComponent<FloatingJoystick>();
             jumpButton = _gameObject.Find("Jump Button").GetComponent<FixedButton>();
             jumpButton.SetPlayer(this.gameObject.GetComponent<PlayerControl>());
+            bombButton = _gameObject.Find("Bomb Button").GetComponent<BombButton>();
+            bombButton.SetPlayer(this.gameObject.GetComponent<PlayerControl>());
         }
         DontDestroyOnLoad(this.gameObject);
     }
@@ -84,7 +89,9 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             Move();
             if (Health <= 0f)
             {
-                GameManager.Instance.LeaveRoom();
+                this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
+                GameManager.Instance.Respawn();
+                Health = 1.0f;
             }
         }
     }
@@ -99,6 +106,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         if (collision.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
+            anim.SetBool("Jump", isJumping);
+
         }
     }
 
@@ -108,6 +117,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
+        if (!other.name.Contains("Bomb"))
+        {
+            return;
+        }
+        Health -= 0.4f;
     }
     void OnTriggerStay(Collider other)
     {
@@ -146,11 +160,23 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             isJumping = true;
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+            anim.SetBool("Jump", isJumping);
         }
         else
         {
             return;
         }
     }
+    public void Attack()
+    {
+        GameObject bombThrow =  PhotonNetwork.Instantiate(Bomb.name, this.transform.position + Vector3.up * 3.0f, this.transform.rotation);
+        //Instantiate(Bomb, this.transform.position + Vector3.up * 3.0f, this.transform.rotation);
+    }
     #endregion
+
+    [PunRPC]
+    public void destroy()
+    {
+        Destroy(this.gameObject);
+    }
 }

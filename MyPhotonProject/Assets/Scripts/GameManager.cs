@@ -67,6 +67,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
+    public void Respawn()
+    {
+        PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0); ;
+    }
+
     #endregion
 
     #region MonoBehaviourPun Callbacks

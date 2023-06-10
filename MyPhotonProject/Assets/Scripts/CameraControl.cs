@@ -57,7 +57,7 @@ public class CameraControl : MonoBehaviour
     #region Private Methods
     void Follow()
     {
-        Camera.main.transform.eulerAngles = new Vector3(60, 0, 0);
+        Camera.main.transform.eulerAngles = new Vector3(50, 0, 0);
         Camera.main.transform.position = tracking.position -
              distance * Vector3.forward + height * Vector3.up;
                  
