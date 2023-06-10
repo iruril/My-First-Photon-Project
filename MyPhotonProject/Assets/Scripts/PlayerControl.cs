@@ -44,15 +44,17 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     #region MonoBehaviour Callbacks
     void Awake()
     {
-        joy = GameObject.Find("Floating Joystick").GetComponent<FloatingJoystick>();
-        jumpButton = GameObject.Find("Jump Button").GetComponent<FixedButton>();
-        jumpButton.SetPlayer(this.gameObject.GetComponent<PlayerControl>());
         rigid = GetComponent<Rigidbody>();
         //anim = GetComponent<Animator>();
-
+        
         if (photonView.IsMine)
         {
             PlayerControl.LocalPlayerInstance = this.gameObject;
+            this.transform.Find("Canvas").GetComponent<Canvas>().gameObject.SetActive(true);
+            Transform _gameObject = this.transform.Find("Canvas").GetComponent<Canvas>().transform;
+            joy = _gameObject.Find("Floating Joystick").GetComponent<FloatingJoystick>();
+            jumpButton = _gameObject.Find("Jump Button").GetComponent<FixedButton>();
+            jumpButton.SetPlayer(this.gameObject.GetComponent<PlayerControl>());
         }
         DontDestroyOnLoad(this.gameObject);
     }
@@ -60,6 +62,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         isJumping = false;
+        
         CameraControl _cameraControl = this.gameObject.GetComponent<CameraControl>();
         if (_cameraControl != null)
         {
