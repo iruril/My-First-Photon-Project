@@ -19,6 +19,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     [Tooltip("플레이어가 이름을 입력하고 플레이할 수 있는 UI패널입니다.")]
     [SerializeField]
     private GameObject controlPanel;
+    [Tooltip("플레이어가 캐릭터 클래스를 선택할 수 있는 UI패널입니다.")]
+    [SerializeField]
+    private GameObject classPanel;
     [Tooltip("플레이어에게 연결 진행 정보를 알려주는 UI라벨입니다.")]
     [SerializeField]
     private GameObject progressLabel;
@@ -41,6 +44,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         //base.OnDisconnected(cause);
         progressLabel.SetActive(false);
         controlPanel.SetActive(true);
+        classPanel.SetActive(true);
         Debug.LogWarningFormat("{0}과 같은 이유로 PUN에 의해 OnDisconnected()호출", cause);
     }
 
@@ -73,6 +77,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         progressLabel.SetActive(false);
         controlPanel.SetActive(true);
+        classPanel.SetActive(true);
     }
     #endregion
 
@@ -82,6 +87,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         isConnecting = true;
         progressLabel.SetActive(true);
         controlPanel.SetActive(false);
+        classPanel.SetActive(false);
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();

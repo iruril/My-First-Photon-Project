@@ -21,8 +21,6 @@ public class PlayerAnimationControl : MonoBehaviourPun
             return;
         }
 
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
         if (!animator)
         {
             return;

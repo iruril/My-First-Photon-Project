@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class GameManager : MonoBehaviourPunCallbacks
 {
     #region Public Fields
@@ -14,6 +16,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Tooltip("플레이어 표시에 쓸 프리펩")]
     public GameObject playerPrefab;
     #endregion
+
+    private Hashtable CP;
 
     #region Photon Callbacks
     public override void OnLeftRoom()
@@ -69,7 +73,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void Respawn()
     {
-        PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0); ;
+        GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        int classNum = (int)CP["Class"];
+        playerTemp.GetComponent<PlayerControl>().meshChange(classNum);
     }
 
     #endregion
@@ -77,6 +83,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region MonoBehaviourPun Callbacks
     void Start()
     {
+        CP = PhotonNetwork.LocalPlayer.CustomProperties;
         Instance = this;
         if (playerPrefab == null)
         {
@@ -87,7 +94,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (PlayerControl.LocalPlayerInstance == null)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                int classNum = (int)CP["Class"];
+                playerTemp.GetComponent<PlayerControl>().meshChange(classNum);
             }
             else
             {

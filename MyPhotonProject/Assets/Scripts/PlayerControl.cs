@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 
@@ -9,14 +10,10 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            // We own this player: send the others our data
-            //stream.SendNext(IsFiring);
             stream.SendNext(Health);
         }
         else
         {
-            // Network player, receive data
-            //this.IsFiring = (bool)stream.ReceiveNext();
             this.Health = (float)stream.ReceiveNext();
         }
     }
@@ -27,6 +24,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     Rigidbody rigid;
     Animator anim;
     Vector3 moveVec;
+    WaitForSeconds attackCoolDown;
     #endregion
 
     #region Public Fields
@@ -34,21 +32,30 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     public float jumpPower = 5.0f;
     [Tooltip("플레이어의 현재 체력")]
     public float Health = 1f;
+    public float attackCoolTime = 1.0f;
     public static GameObject LocalPlayerInstance;
     public GameObject Bomb;
     public bool isJumping;
+    public bool isDead;
+    public bool isAttacking;
+
+    public int mesh;
 
     public FloatingJoystick joy;
     public FixedButton jumpButton;
     public BombButton bombButton;
+
+    public HPBarController HPBar;
     #endregion
 
 
     #region MonoBehaviour Callbacks
     void Awake()
     {
+        attackCoolDown = new WaitForSeconds(attackCoolTime);
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        isDead = false;
         
         if (photonView.IsMine)
         {
@@ -67,7 +74,12 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         isJumping = false;
-        
+
+        if (photonView.IsMine)
+        {
+            HPBar.nickName.text = this.photonView.Owner.NickName;
+        }
+
         CameraControl _cameraControl = this.gameObject.GetComponent<CameraControl>();
         if (_cameraControl != null)
         {
@@ -80,6 +92,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
         }
+
     }
 
     void FixedUpdate()
@@ -89,16 +102,20 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
             Move();
             if (Health <= 0f)
             {
-                this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
-                GameManager.Instance.Respawn();
-                Health = 1.0f;
+                Die();
             }
         }
     }
 
     void LateUpdate()
     {
-        //anim.SetFloat("Move", moveVec.sqrMagnitude);
+        if (this.anim.GetCurrentAnimatorStateInfo(1).IsName("Attack"))
+        {
+            if (this.anim.GetCurrentAnimatorStateInfo(1).normalizedTime >= 0.80f)
+            {
+                anim.SetBool("Attack", false);
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -121,7 +138,8 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
-        Health -= 0.4f;
+        Health -= 0.4f; //나중에 IDamageable 만들어서 TakeHit 호출할 수 있도록 하자.
+        this.HPBar.TakeHit(0.4f); //얘는 이후에 인터페이스 구축 이후에 인터페이스의 TakeHit 안으로 옮기자.
     }
     void OnTriggerStay(Collider other)
     {
@@ -135,6 +153,10 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     #region Private Methods
     void Move()
     {
+        if (this.isDead)
+        {
+            return;
+        }
         // 1. Input Value
         float x = joy.Horizontal;
         float z = joy.Vertical;
@@ -151,11 +173,46 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         Quaternion moveQuat = Quaternion.Slerp(rigid.rotation, dirQuat, 0.3f);
         rigid.MoveRotation(moveQuat);
     }
+
+    void Die()
+    {
+        isDead = true;
+        joy.gameObject.SetActive(false);
+        jumpButton.gameObject.SetActive(false);
+        bombButton.gameObject.SetActive(false);
+
+        this.anim.SetBool("Die", isDead);
+        Invoke("Respawn", 5.0f);
+    }
+
+    void Respawn()
+    {
+        this.GetComponent<PhotonView>().RPC("destroy", RpcTarget.AllBuffered);
+        GameManager.Instance.Respawn();
+
+        isDead = false;
+        joy.gameObject.SetActive(true);
+        jumpButton.gameObject.SetActive(true);
+        bombButton.gameObject.SetActive(true);
+        Health = 1.0f;
+    }
+
+    private IEnumerator AtkCoolDown()
+    {
+        isAttacking = true;
+        anim.SetBool("Attack", isAttacking);
+        yield return attackCoolDown;
+        isAttacking = false;
+    }
     #endregion
 
     #region Public Methods
     public void Jump()
     {
+        if (this.isDead)
+        {
+            return;
+        }
         if (!isJumping)
         {
             isJumping = true;
@@ -169,13 +226,22 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void Attack()
     {
+        if (this.isDead || this.isAttacking)
+        {
+            return;
+        }
+        
+        StartCoroutine(AtkCoolDown());
         GameObject bombThrow =  PhotonNetwork.Instantiate(Bomb.name, this.transform.position + Vector3.up * 3.0f, this.transform.rotation);
-        //Instantiate(Bomb, this.transform.position + Vector3.up * 3.0f, this.transform.rotation);
+    }
+    public void meshChange(int mesh)
+    {
+        this.GetComponent<PlayerMesh>().GetComponent<PhotonView>().RPC("ChangeClass", RpcTarget.AllBuffered, mesh);
     }
     #endregion
 
     [PunRPC]
-    public void destroy()
+    void destroy()
     {
         Destroy(this.gameObject);
     }

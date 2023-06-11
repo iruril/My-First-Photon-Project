@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Upper Mask
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000000000000000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Margot
+    m_Weight: 1
+  - m_Path: rig:rig
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:LThigh
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:LThigh/rig:LShin
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:LThigh/rig:LShin/rig:LFootBone1
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:LThigh/rig:LShin/rig:LFootBone1/rig:LFootBone2
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:LShoulder
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:LShoulder/rig:LBicep
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:LShoulder/rig:LBicep/rig:LForearm
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:LShoulder/rig:LBicep/rig:LForearm/rig:LHand
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:LShoulder/rig:LBicep/rig:LForearm/rig:LHand/rig:left_weapon
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:Neck
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:Neck/rig:Head
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:RShoulder
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:RShoulder/rig:RBicep
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:RShoulder/rig:RBicep/rig:RForearm
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:RShoulder/rig:RBicep/rig:RForearm/rig:RHand
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:Lumbar1/rig:Lumbar2/rig:RShoulder/rig:RBicep/rig:RForearm/rig:RHand/rig:right_weapon
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:RThigh
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:RThigh/rig:RShin
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:RThigh/rig:RShin/rig:RFootBone1
+    m_Weight: 1
+  - m_Path: rig:rig/rig:GlobalSRT/rig:UpperBody/rig:RThigh/rig:RShin/rig:RFootBone1/rig:RFootBone2
+    m_Weight: 1
+  - m_Path: shadow
+    m_Weight: 1
+  - m_Path: weapon:weapon
+    m_Weight: 1
+  - m_Path: weapon:weapon/weapon:left_weapon
+    m_Weight: 1
+  - m_Path: weapon:weapon/weapon:right_weapon
+    m_Weight: 1
