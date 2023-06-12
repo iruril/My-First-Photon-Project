@@ -5,6 +5,7 @@ using Photon.Pun;
 
 public class BombScript : MonoBehaviourPun
 {
+
     public float detonateTime = 2.0f;
     public float throwPower = 5.0f;
     public GameObject Explosion;

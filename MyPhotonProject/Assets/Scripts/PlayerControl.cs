@@ -11,10 +11,14 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(Health);
+            stream.SendNext(msg);
+            stream.SendNext(hitBy);
         }
         else
         {
             this.Health = (float)stream.ReceiveNext();
+            this.msg = (string)stream.ReceiveNext();
+            this.hitBy = (string)stream.ReceiveNext();
         }
     }
 
@@ -38,8 +42,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     public bool isJumping;
     public bool isDead;
     public bool isAttacking;
+    public bool dieMessegeSent = false;
 
     public int mesh;
+    public string hitBy = string.Empty;
+    public string msg = string.Empty;
 
     public FloatingJoystick joy;
     public FixedButton jumpButton;
@@ -138,6 +145,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
+        hitBy = other.GetComponent<PhotonView>().Owner.NickName;
         Health -= 0.4f; //나중에 IDamageable 만들어서 TakeHit 호출할 수 있도록 하자.
         this.HPBar.TakeHit(0.4f); //얘는 이후에 인터페이스 구축 이후에 인터페이스의 TakeHit 안으로 옮기자.
     }
@@ -182,6 +190,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         bombButton.gameObject.SetActive(false);
 
         this.anim.SetBool("Die", isDead);
+        if (!dieMessegeSent)
+        {
+            dieMessegeSent = true;
+            this.GetComponent<PhotonView>().RPC("sendDieMessege", RpcTarget.Others);
+        }
         Invoke("Respawn", 5.0f);
     }
 
@@ -195,7 +208,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         jumpButton.gameObject.SetActive(true);
         bombButton.gameObject.SetActive(true);
         Health = 1.0f;
+        hitBy = string.Empty;
+        dieMessegeSent = false;
     }
+
+    
 
     private IEnumerator AtkCoolDown()
     {
@@ -244,5 +261,12 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     void destroy()
     {
         Destroy(this.gameObject);
+    }
+
+    [PunRPC]
+    void sendDieMessege()
+    {
+        msg = this.photonView.Owner.NickName + " was blown up by " + hitBy;
+        ChatManager.ChatInstance.SendKillLog(this.photonView.gameObject.GetComponent<PlayerControl>().msg);
     }
 }

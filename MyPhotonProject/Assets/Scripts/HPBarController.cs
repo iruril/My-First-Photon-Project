@@ -79,6 +79,4 @@ public class HPBarController : MonoBehaviourPun, IPunObservable
     {
         realHpHit = true;
     }
-
-    
 }

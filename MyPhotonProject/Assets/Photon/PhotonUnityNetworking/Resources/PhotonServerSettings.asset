@@ -42,6 +42,10 @@ MonoBehaviour:
   - destroy
   - ChangeClass
   - meshChange
+  - ReceiveMsg
+  - OpenChatBox
+  - ReceiveKillMsg
+  - sendDieMessege
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
