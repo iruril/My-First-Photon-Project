@@ -193,7 +193,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         if (!dieMessegeSent)
         {
             dieMessegeSent = true;
-            this.GetComponent<PhotonView>().RPC("sendDieMessege", RpcTarget.Others);
+            sendDieMessege();
         }
         Invoke("Respawn", 5.0f);
     }
@@ -212,7 +212,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         dieMessegeSent = false;
     }
 
-    
+    void sendDieMessege()
+    {
+        msg = this.photonView.Owner.NickName + " was blown up by " + hitBy;
+        ChatManager.ChatInstance.SendKillLog(this.photonView.gameObject.GetComponent<PlayerControl>().msg);
+    }
 
     private IEnumerator AtkCoolDown()
     {
@@ -263,10 +267,5 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(this.gameObject);
     }
 
-    [PunRPC]
-    void sendDieMessege()
-    {
-        msg = this.photonView.Owner.NickName + " was blown up by " + hitBy;
-        ChatManager.ChatInstance.SendKillLog(this.photonView.gameObject.GetComponent<PlayerControl>().msg);
-    }
+   
 }
