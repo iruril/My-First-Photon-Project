@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -73,7 +70,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void Respawn()
     {
-        GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+        float x = Random.Range(-30f, 30f);
+        float z = Random.Range(-30f, 30f);
+        GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(x, 5f, z), Quaternion.identity, 0);
         int classNum = (int)CP["Class"];
         playerTemp.GetComponent<PlayerControl>().meshChange(classNum);
     }
@@ -94,7 +93,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (PlayerControl.LocalPlayerInstance == null)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-                GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                float x = Random.Range(-30f, 30f);
+                float z = Random.Range(-30f, 30f);
+                GameObject playerTemp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(x, 5f, z), Quaternion.identity, 0);
                 int classNum = (int)CP["Class"];
                 playerTemp.GetComponent<PlayerControl>().meshChange(classNum);
             }

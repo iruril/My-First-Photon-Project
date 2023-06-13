@@ -153,7 +153,8 @@ PlayerSettings:
   androidSupportedAspectRatio: 0
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.DefaultCompany.MyPhotonProject
+    Android: com.DefaultCompany.BombGame
+    iPhone: com.DefaultCompany.BombGame
   buildNumber:
     Standalone: 0
     iPhone: 0

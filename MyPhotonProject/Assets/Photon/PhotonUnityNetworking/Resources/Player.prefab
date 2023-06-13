@@ -1180,9 +1180,11 @@ MonoBehaviour:
   Health: 1
   attackCoolTime: 1
   Bomb: {fileID: 3693465673241179638, guid: 0f9e782fa290bab4c951a4ed9eca24b7, type: 3}
+  WaterSparkle: {fileID: 5137123306192418792, guid: 5a8d99fb95262ea458a7b580f2a1611c, type: 3}
   isJumping: 0
   isDead: 0
   isAttacking: 0
+  isEmit: 0
   dieMessegeSent: 0
   mesh: 0
   hitBy: 

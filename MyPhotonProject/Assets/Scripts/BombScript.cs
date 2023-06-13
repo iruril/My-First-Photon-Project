@@ -9,6 +9,7 @@ public class BombScript : MonoBehaviourPun
     public float detonateTime = 2.0f;
     public float throwPower = 5.0f;
     public GameObject Explosion;
+    public GameObject ExplosionTxt;
     bool isDetonated = false;
     GameObject _gameObject;
 
@@ -46,6 +47,7 @@ public class BombScript : MonoBehaviourPun
         this.transform.position = _gameObject.transform.position;
         this.gameObject.GetComponent<SphereCollider>().enabled = true;
         Instantiate(Explosion, this.transform.position, Quaternion.LookRotation(Vector3.up));
+        Instantiate(ExplosionTxt, this.transform.position, Quaternion.LookRotation(Vector3.up));
     }
 
     [PunRPC]

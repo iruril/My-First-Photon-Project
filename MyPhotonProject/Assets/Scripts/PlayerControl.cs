@@ -39,9 +39,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
     public float attackCoolTime = 1.0f;
     public static GameObject LocalPlayerInstance;
     public GameObject Bomb;
+    public GameObject WaterSparkle;
     public bool isJumping;
     public bool isDead;
     public bool isAttacking;
+    public bool isEmit = false;
     public bool dieMessegeSent = false;
 
     public int mesh;
@@ -63,7 +65,7 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         isDead = false;
-        
+
         if (photonView.IsMine)
         {
             PlayerControl.LocalPlayerInstance = this.gameObject;
@@ -155,6 +157,11 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
+        if(other.tag == "Water" && this.isEmit == false)
+        {
+            StartCoroutine(WaterSparkleEmit());
+            Instantiate(WaterSparkle, new Vector3(this.transform.position.x, 0.5f, this.transform.position.z) , Quaternion.LookRotation(Vector3.up));
+        }
     }
     #endregion
 
@@ -224,6 +231,13 @@ public class PlayerControl : MonoBehaviourPunCallbacks, IPunObservable
         anim.SetBool("Attack", isAttacking);
         yield return attackCoolDown;
         isAttacking = false;
+    }
+
+    private IEnumerator WaterSparkleEmit()
+    {
+        isEmit = true;
+        yield return new WaitForSeconds(1.0f);
+        isEmit = false;
     }
     #endregion
 
